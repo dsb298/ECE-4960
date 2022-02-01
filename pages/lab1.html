@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Lab 1</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Bootstrap Icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+        <!-- SimpleLightbox plugin CSS-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="../css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Masthead-->
+        <header class="lab1-head">
+            <div class="container px-4 px-lg-5 h-100">
+                <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+                    <div class="col-lg-8 align-self-end">
+                        <h1 class="text-white font-weight-bold">Lab 1</h1>
+                        <!-- <hr class="divider" /> -->
+                    </div>
+                    <div class="col-lg-8 align-self-baseline">
+                        <!-- <p class="text-white-75 mb-5">Start Bootstrap can help you build better websites using the Bootstrap framework! Just download a theme and start customizing, no strings attached!</p> -->
+                        <!-- <a class="btn btn-primary btn-xl" href="#portfolio">Labs</a> -->
+                    </div>
+                </div>
+            </div>
+        </header>
+        <section class="page-section lab1-primary" id="lab1-contents">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <h2>Lab Description</h2>
+                            <br>
+                            <h4>
+                                The purpose of this lab is to setup the Arduino IDE for the Artemis nano board. A few example sketches are also uploaded to the board to demonstate it's functionality.
+                                The example sketches include blinking the onboard LED, communicating with the board thorugh UART, using the ADC to read the onboard temperature sensor, and measuring frequencies with the onboard mic.
+                                <br>
+                                <br>
+                                It's worth noting that I am using Arduino 2.0 IDE, rather than 1.8, which has a different serial monitor.
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <h2>Lab Sections</h2>
+                            <br>
+                            <h4>
+                                The first part of this lab involves blinking the onboard LED. This was done by uploading the "Blink" example sketch.
+                            </h4>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" class="fullscreen-video" controls>
+                                    <source class="text-center" src="../assets/vid/lab1/part1.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <h4>
+                                The second part of this lab has us communicate with the board through UART using an example sketch.
+                            </h4>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/vid/lab1/part2.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <h4>
+                                The third part of this lab uses the ADC to measure the onboard temperature sensor. This is again done by uploading an example sketch from the Arduino IDE.
+                            </h4>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/vid/lab1/part3.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <h4>
+                                The fourth part of this lab makes use of the onboard mic. This program uses a radix fft algorithm to find the loudest frequency, and is demonstrated by whistling at different pitches near the board.
+                            </h4>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/vid/lab1/part5.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <h4>
+                                The fifth part of this lab is a continuation of part 4. In this part of the lab, the onboard LED is turned on when I whistle.
+                                This was done by measuring the frequency that I normally whistle at in part 4, then adjusting the existing code to check if a frequency near my whistle frequency was heard.
+                                The <code>printLoudest(void)</code> function was adjusted to return a <code>uint32_t</code> rather than <code>void</code>, and now returns the calculated loudest frequency rather than just printing it out.
+                                The onboard LED is set as an output using <code>pinMode(LED_BUILTIN, OUTPUT)</code>. The Logic within the for loop to turn the LED on or off can be seen below.
+                                <br>
+                                <br>
+                                <code>
+                                        uint32_t WHISTLE_FREQ_LOW  = 1500;
+                                        <br>
+                                        uint32_t WHISTLE_FREQ_HIGH = 1700;
+                                        <br>
+                                        if(freq >= WHISTLE_FREQ_LOW && freq <= WHISTLE_FREQ_HIGH){
+                                            <br>
+                                            &nbsp digitalWrite(LED_BUILTIN, HIGH);
+                                            <br>
+                                        }
+                                        <br>
+                                        else{
+                                            <br>
+                                            &nbsp digitalWrite(LED_BUILTIN, LOW);
+                                            <br>
+                                        }
+                                        <br>
+                                        Serial.println(freq);
+                                        <br>
+                                </code>
+                            </h4>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/vid/lab1/part6.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </h4>
+                        <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Services-->
+        <!-- <section class="page-section" id="services">
+            <div class="container px-4 px-lg-5">
+                <h2 class="text-center mt-0">At Your Service</h2>
+                <hr class="divider" />
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-gem fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Sturdy Themes</h3>
+                            <p class="text-muted mb-0">Our themes are updated regularly to keep them bug free!</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-laptop fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Up to Date</h3>
+                            <p class="text-muted mb-0">All dependencies are kept current to keep things fresh.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-globe fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Ready to Publish</h3>
+                            <p class="text-muted mb-0">You can use this design as is, or you can make changes!</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-heart fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Made with Love</h3>
+                            <p class="text-muted mb-0">Is it really open source if it's not made with love?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- Portfolio-->
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- SimpleLightbox plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <!-- * *                               SB Forms JS                               * *-->
+        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    </body>
+</html>

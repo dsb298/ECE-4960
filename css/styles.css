@@ -11424,10 +11424,37 @@ header.masthead h1, header.masthead .h1 {
   }
 }
 
+header.lab1-head {
+  padding-top: 10rem;
+  padding-left: 10rem;
+  padding-right: 10rem;
+  padding-bottom: calc(10rem - 4.5rem);
+  /* background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../assets/img/bg-masthead.jpg"); */
+  /* background: #333333; */
+  background: rgb(4,0,74);
+  background: linear-gradient(90deg, rgba(4,0,74,1) 0%, rgba(0,0,64,1) 17%, rgba(0,0,0,1) 100%);
+  /* linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../assets/img/bg-masthead.jpg"); */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+}
+@media (min-width: 1200px) {
+  header.lab1-head h1, header.lab1-head .h1 {
+    font-size: 5rem;
+  }
+}
+.lab1-primary {
+  --bs-bg-opacity: 1;
+  /* rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important; */
+  background-color: #dbdbdb;
+}
+
 #portfolio .container-fluid, #portfolio .container-sm, #portfolio .container-md, #portfolio .container-lg, #portfolio .container-xl, #portfolio .container-xxl {
   max-width: 1920px;
 }
 #portfolio .container-fluid .portfolio-box, #portfolio .container-sm .portfolio-box, #portfolio .container-md .portfolio-box, #portfolio .container-lg .portfolio-box, #portfolio .container-xl .portfolio-box, #portfolio .container-xxl .portfolio-box {
+  /* background-image: url(../assets/img/portfolio/thumbnails/1.jpg); */
   position: relative;
   display: block;
 }
@@ -11454,9 +11481,9 @@ header.masthead h1, header.masthead .h1 {
   bottom: 0;
   width: 100%;
   height: 100%;
-  float: right;
-  /* opacity: .5; */
-  /* z-index: 999; */
+  /* float: top; */
+  opacity: 1;
+  z-index: 999;
 }
 /* #portfolio .container-fluid .portfolio-box:hover .portfolio-box-caption, #portfolio .container-sm .portfolio-box:hover .portfolio-box-caption, #portfolio .container-md .portfolio-box:hover .portfolio-box-caption, #portfolio .container-lg .portfolio-box:hover .portfolio-box-caption, #portfolio .container-xl .portfolio-box:hover .portfolio-box-caption, #portfolio .container-xxl .portfolio-box:hover .portfolio-box-caption { */
 /* #portfolio .container-fluid .portfolio-box:hover .portfolio-box-caption, #portfolio .container-sm .portfolio-box:hover .portfolio-box-caption, #portfolio .container-md .portfolio-box:hover .portfolio-box-caption, #portfolio .container-lg .portfolio-box:hover .portfolio-box-caption, #portfolio .container-xl .portfolio-box:hover .portfolio-box-caption, #portfolio .container-xxl .portfolio-box:hover .portfolio-box-caption {
