@@ -7813,6 +7813,12 @@ textarea.form-control-lg {
   background-color: #000000;
 }
 
+.lab1-primary {
+  --bs-bg-opacity: 1;
+  /* rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important; */
+  background-color: #555555;
+}
+
 .bg-secondary {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
