@@ -37,47 +37,112 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to connect two Time of Flight (TOF) sensors and an Intertial Measurement Unit (IMU) to the Artemis nano. This connection will be made through a single I2C connection, so that
+                                each sensor is daisy chained together.
+                                <br>
+                                <br>
+                                With these sensors in place, The robot will be able to sense how far objects are to it from the left and from the front. It will also be able to use the IMU to sense the pitch, roll, and yaw of the car as it moves.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                Before completing the different parts of this lab, the location of the sensors on the robot must be considered. I've decided to put the TOF sensors on the front and left of the robot, and the IMU directly above the battery pack,
+                                 as can be seen in the image below.
+                            </h5>
+                            <h1>
+                                IMAGE
+                            </h1>
+                            <br>
+                            <h5>
+                                Wires were cut to the appropriate length to fit into place, and soldered onto the sensors. Ontop of this, two header pins were soldered onto the Artemis board at pins A1 and A2, and a wire is connected from them to the XSHUT pins on the TOF sensors.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/vid/lab3/pics/artemis_xshut_pins.png" alt="i2c_address">
+                            </div>
+                            <br>
+                            <h5>
+                                These headers are used for now to make prototyping easier, and may change in the future. I plan to solder the wires directly to the board for the final design.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
+                            <br>
+                            <h3><u>Part 1a:</u></h3>
+                            <h5>
+                                Part 1 of this lab involves testing the functionality of the TOF sensors to ensure everything is working properly. The first issue faced is that we have two TOF sensors with the same address
+                                connected to a single I2C connection. The XSHUT pins help solve this problem by allowing us to turn a sensor on or off. The XSHUT pin on the sensor is connected to the soldered on header pins on the Artemis.
+                                These pins are written low to turn the sensor off. With one sensor off, I can then change the address of the on sensor.
+                                <br>
+                                <br>
+                                The default address of the sensors in 0x52. However, this 8-bit address includes the the read/write bit as can be seen in the image below.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/vid/lab3/pics/i2c_address.png" alt="i2c_address">
+                            </div>
+                            <br>
+                            <h5>
+                                The actual address is right shifted to become 7-bits, and is 0x29 by default. The address was printed out below using <code>getI2CAddress()</code> and shows the entire 8-bit address.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/vid/lab3/pics/i2c_address_sensors.png" alt="i2c_address">
+                            </div>
+                            <br>
+                            <h5>
+                                As can be seen, the second sensors address was changed to 0x54 using <code>setI2CAddress((uint8_t)0x54)</code> while the other sensor was off. I decided not to use 0x53 as that is the sensors default write address.
+                            </h5>
                             <br>
                             <br>
+                            <h3><u>Part 2a:</u></h3>
+                            <h5>
+                                The TOF sensors have 3 modes. One for short range sensing < 1.3 meters, one for medium range < 3m, and one for long range < 4m. The longer range modes are less accurate at shorter ranges. This makes it difficult to decide
+                                the best mode to be in. Under most circumstances, the robot will likely be in a larger room. This means the longer range mode will likely be the best mode from the sensor to stay in. It may also be beneficial to sometimes change
+                                the mode on the fly. Deciding this will take some testing once the robots is full assembled.
+                            </h5>
+                            <h3><u>Part 3a:</u></h3>
                             <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h1>
+                                This portion requires a ruler, which I don't have. This part will be made up shortly, on 2/15/22. Both TOF sensors are currently working as can be seen in the image below.
+                            </h1>
+                            <div style="text-align: center;">
+                                <img src="../assets/vid/lab3/pics/distance_measurements_temp.png" alt="p3">
+                            </div>
                             <br>
                             <br>
+                            <h3><u>Part 1b:</u></h3>
+                            <h5>
+                                This part of the lab involves using the IMU, which is connected to the same I2C pins as the TOF sensors. The IMU has a different default address than the TOF sensors, so it does not need and extra work done to get communication going.
+                                 However, the IMU does have a constant called <code>AD0_VAL</code> that is 1 by default. This represents the last bit in the I2C address, a one in the last bit of an I2C address is generally a 0 when reading and a 1 when writting. We will not
+                                be wrtting to the IMU, so this needs to be changed to a 0 for reading.
+                                <br>
+                                <br>
+                                The values can then be printed from the IMU, and can be seen below.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/vid/lab3/pics/mag_accel_initial.png" alt="p3">
+                            </div>
                             <br>
-                            bottom
+                            <h5>
+                                The accelerometer values are in milli gs, and the gyroscope values are in degrees per second. When the board is moved around, these values change. This can be hard to see using the given layout. Also, these are not the units we want to work with on our robot.
+                            </h5>
+                            <br>
+                            <br>
+                            <h3><u>Part 2b:</u></h3>
+                            <h5>
+                                Part 2 of the IMU portion of this lab involves changing the units of the accelerometer to measure angles in the pitch and roll of the IMU.
+                            </h5>
+                            </h4>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
