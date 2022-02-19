@@ -44,11 +44,11 @@
                             </div>
                             <br>
                             <h5>
-                                The purpose of this lab is to connect two Time of Flight (TOF) sensors and an Intertial Measurement Unit (IMU) to the Artemis nano. This connection will be made through a single I2C connection, so that
+                                The purpose of this lab is to connect two Time of Flight (TOF) sensors and an Inertial Measurement Unit (IMU) to the Artemis nano. This connection will be made through a single I2C connection, so that
                                 each sensor is daisy chained together.
                                 <br>
                                 <br>
-                                With these sensors in place, The robot will be able to sense how far objects are to it from the left and from the front. It will also be able to use the IMU to sense the pitch, roll, and yaw of the car as it moves.
+                                With these sensors in place, the robot will be able to sense how far objects are to it from the left and from the front. It will also be able to use the IMU to sense the pitch, roll, and yaw of the car as it moves.
                             </h5>
                             <br>
                             <br>
@@ -56,22 +56,18 @@
                                 <h2>Setup</h2>
                             </div>
                             <h5>
-                                Before completing the different parts of this lab, the location of the sensors on the robot must be considered. I've decided to put the TOF sensors on the front and left of the robot, and the IMU directly above the battery pack,
-                                 as can be seen in the image below.
+                                Before completing the different parts of this lab, the location of the sensors on the robot must be considered. I've decided to put the TOF sensors on the front and left of the robot, and the IMU directly above the battery pack.
                             </h5>
-                            <h1>
-                                IMAGE
-                            </h1>
                             <br>
                             <h5>
-                                Wires were cut to the appropriate length to fit into place, and soldered onto the sensors. Ontop of this, two header pins were soldered onto the Artemis board at pins A1 and A2, and a wire is connected from them to the XSHUT pins on the TOF sensors.
+                                Wires were cut to the appropriate length to fit into place and soldered onto the sensors. On top of this, two header pins were soldered onto the Artemis board at pins A1 and A2, and a wire is connected from them to the XSHUT pins on the TOF sensors.
                             </h5>
                             <div style="text-align: center;">
-                                <img src="../assets/lab3/pics/artemis_xshut_pins.png" alt="i2c_address">
+                                <img src="../assets/lab3/pics/artemis_xshut_pinsr.jpg" alt="i2c_address">
                             </div>
                             <br>
                             <h5>
-                                These headers are used for now to make prototyping easier, and may change in the future. I plan to solder the wires directly to the board for the final design.
+                                These headers are used for now to make prototyping easier and may change in the future. I plan to solder the wires directly to the board for the final design.
                             </h5>
                             <br>
                             <br>
@@ -82,18 +78,18 @@
                             <h3><u>Part 1a:</u></h3>
                             <h5>
                                 Part 1 of this lab involves testing the functionality of the TOF sensors to ensure everything is working properly. The first issue faced is that we have two TOF sensors with the same address
-                                connected to a single I2C connection. The XSHUT pins help solve this problem by allowing us to turn a sensor on or off. The XSHUT pin on the sensor is connected to the soldered on header pins on the Artemis.
+                                connected to a single I2C connection. The XSHUT pins help solve this problem by allowing us to turn a sensor on or off. The XSHUT pin on the sensor is connected to the soldered-on header pins on the Artemis.
                                 These pins are written low to turn the sensor off. With one sensor off, I can then change the address of the on sensor.
                                 <br>
                                 <br>
-                                The default address of the sensors in 0x52. However, this 8-bit address includes the the read/write bit as can be seen in the image below.
+                                The default address of the sensors in 0x52. However, this 8-bit address includes the read/write bit as can be seen in the image below.
                             </h5>
                             <div style="text-align: center;">
                                 <img src="../assets/lab3/pics/i2c_address.png" alt="i2c_address">
                             </div>
                             <br>
                             <h5>
-                                The actual address is right shifted to become 7-bits, and is 0x29 by default. The address was printed out below using <code>getI2CAddress()</code> and shows the entire 8-bit address.
+                                The actual address is right shifted to become 7-bits and is 0x29 by default. The address was printed out below using <code>getI2CAddress()</code> and shows the entire 8-bit address.
                             </h5>
                             <div style="text-align: center;">
                                 <img src="../assets/lab3/pics/i2c_address_sensors.png" alt="i2c_address">
@@ -106,42 +102,93 @@
                             <br>
                             <h3><u>Part 2a:</u></h3>
                             <h5>
-                                The TOF sensors have 3 modes. One for short range sensing < 1.3 meters, one for medium range < 3m, and one for long range < 4m. The longer range modes are less accurate at shorter ranges. This makes it difficult to decide
-                                the best mode to be in. Under most circumstances, the robot will likely be in a larger room. This means the longer range mode will likely be the best mode from the sensor to stay in. It may also be beneficial to sometimes change
+                                The TOF sensors have 3 modes. One for short range sensing < 1.3 meters, one for medium range < 3m, and one for long range < 4m. The longer-range modes are less accurate at shorter ranges. This makes it difficult to decide
+                                the best mode to be in. Under most circumstances, the robot will likely be in a larger room. This means the longer-range mode will likely be the best mode from the sensor to stay in. It may also be beneficial to sometimes change
                                 the mode on the fly. Deciding this will take some testing once the robots is full assembled.
                             </h5>
                             <h3><u>Part 3a:</u></h3>
                             <br>
-                            <h1>
-                                This portion requires a ruler, which I don't have. This part will be made up shortly, on 2/15/22. Both TOF sensors are currently working as can be seen in the image below.
-                            </h1>
+                            <h5>
+                                For this portion of the lab, I tested the accuracy of the TOF sensors in both long range mode and short-range mode from 20mm to 1000mm. Below is an image of the setup I used for this test.
+                            </h5>
                             <div style="text-align: center;">
-                                <img src="../assets/lab3/pics/distance_measurements_temp.png" alt="p3">
+                                <img src="../assets/lab3/pics/dist_setup.jpg" alt="p3">
+                            </div>
+                            <br>
+                            <br>
+                            <h5>
+                                The accuracy of the short distance mode was good between these ranges, as can be seen below. However, the long-range mode was not as good. I expected this to be the case within 1 meter. The 
+                                issue is that I was not able to get any readings above 1200 mm for either long range or short-range mode. This makes sense for short range, as its max distance is 1300 mm, but long range should 
+                                be able to read up to 4000 mm. I have yet to find the cause of this issue.
+                            </h5>
+                            <br>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab3/pics/dist_accuracy.png" alt="p3">
                             </div>
                             <br>
                             <br>
                             <h3><u>Part 1b:</u></h3>
                             <h5>
-                                This part of the lab involves using the IMU, which is connected to the same I2C pins as the TOF sensors. The IMU has a different default address than the TOF sensors, so it does not need and extra work done to get communication going.
-                                 However, the IMU does have a constant called <code>AD0_VAL</code> that is 1 by default. This represents the last bit in the I2C address, a one in the last bit of an I2C address is generally a 0 when reading and a 1 when writting. We will not
-                                be wrtting to the IMU, so this needs to be changed to a 0 for reading.
+                                This part of the lab involves using the IMU, which is connected to the same I2C pins as the TOF sensors. The IMU has a different default address than the TOF sensors, so it does not need, and extra work done to get communication going.
+                                 However, the IMU does have a constant called <code>AD0_VAL</code> that is 1 by default. This represents the last bit in the I2C address, a one in the last bit of an I2C address is generally a 0 when reading and a 1 when writing. We will not
+                                be writing to the IMU, so this needs to be changed to a 0 for reading.
                                 <br>
                                 <br>
-                                The values can then be printed from the IMU, and can be seen below.
+                                The values can then be printed from the IMU and can be seen below.
                             </h5>
                             <div style="text-align: center;">
                                 <img src="../assets/lab3/pics/mag_accel_initial.png" alt="p3">
                             </div>
                             <br>
                             <h5>
-                                The accelerometer values are in milli gs, and the gyroscope values are in degrees per second. When the board is moved around, these values change. This can be hard to see using the given layout. Also, these are not the units we want to work with on our robot.
+                                The accelerometer values are in milli g’s, and the gyroscope values are in degrees per second. When the board is moved around, these values change. This can be hard to see using the given layout. Also, these are not the units we want to work with on our robot.
                             </h5>
                             <br>
                             <br>
                             <h3><u>Part 2b:</u></h3>
                             <h5>
-                                Part 2 of the IMU portion of this lab involves changing the units of the accelerometer to measure angles in the pitch and roll of the IMU.
+                                Part 2 of the IMU portion of this lab involves changing the units of the accelerometer to measure angles in the pitch and roll of the IMU. This is done by converting the measurements from part 1b. These measurements are
+                                converted to pitch and roll using <code>int pitch_a = 180*atan2(myICM.accX(), myICM.accZ())/M_PI;</code> and <code>int roll_a = 180*atan2(myICM.accY(), myICM.accZ())/M_PI;</code>. The angle measurements can be seen in the images below.
                             </h5>
+                            <br>
+                            <div style="text-align: center;">
+                                <h3>Flat</h3>
+                                <img src="../assets/lab3/pics/init_flat.jpg" alt="p3">
+                            </div>
+                            <br>
+                            <div style="text-align: center;">
+                                <h3>Pitched up</h3>
+                                <img src="../assets/lab3/pics/init_pitch.jpg" alt="p3">
+                            </div>
+                            <br>
+                            <div style="text-align: center;">
+                                <h3>Rolled left</h3>
+                                <img src="../assets/lab3/pics/init_roll.jpg" alt="p3">
+                            </div>
+                            <br>
+                            <br>
+                            <h5>
+                                While the data is noisy, the measurements are relatively accurate. To reduce this noise, the data is passed through a low-pass filter.
+                                The code to filter this data is <code>pitch = a*pitch + (1-a)*prev_pitch;</code>, and the data after filtering only the pitch can be seen below.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab3/pics/filtered_pitch.jpg" alt="p3">
+                            </div>
+                            <br>
+                            <h5>
+                                The pitch data is now a steady line around 90 degrees when pitched up. The improvement this filter makes can easily be seen by comparing the pitch and roll data in this image.
+                            </h5>
+                            <br>
+                            <br>
+                            <h3><u>Part 3b:</u></h3>
+                            <h5>
+                                For the last portion of this lab, pitch roll and yaw are calculated using the IMU's gyroscope. A benefit of using the gyroscope is that it allows for the measurement of yaw, whereas the accelerometer did not.
+                                the gyroscope data is modified to be more usable using this code <code>pitch_g = pitch_g + myICM.gyrX()*dt;</code>. This gyro data with the accelerometer data allows for more sensor fusion and higher levels of accuracy.
+                                The data for the gyro can be seen in the image below. This is with the gyro centered at the start, then turned to a random angle.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab3/pics/gyro_data.PNG" alt="p3">
+                            </div>
                             </h4>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
@@ -200,3 +247,5 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
+
