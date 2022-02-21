@@ -37,47 +37,81 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to characterize the car. The characteristics I've chosen are the weight of the car, the dimensions of the car, and the acceleration of the car.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                The weight of the car will be measured with a normal scale, the dimensions will be measured with a ruler, and the acceleration will be measured with the accelerometer.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
+                            <br>
+                            <h3><u>Part 1 Weight:</u></h3>
+                            <h5>
+                                The car was weighed with a kitchen scale in units of kilograms. As can be seen below, the weight is .4948 kg.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab4/img/weight.jpg" alt="i2c_address">
+                            </div>
                             <br>
                             <br>
+                            <h3><u>Part 2: Dimensions</u></h3>
+                            <h5>
+                                The car's dimensions were measured in millimeters using a measuring tape.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab4/img/measuring.jpg" alt="i2c_address">
+                            </div>
                             <br>
+                            <h5>
+                                After measuring the dimensions of the car, I made a simple model on Fusion 360.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab4/img/car_dim.png" alt="i2c_address">
+                            </div>
                             <br>
+                            <h5>
+                                The dimensions I felt were important to measure were the car length, wheel diameter, and clearance height. The wheel circumference is then 2*pi*40mm. This comes out to be about .25 meters.
+                                 I verified this by rolling the car along the tape measure and got about .25 meters.
+                            </h5>
+                            <h3><u>Part 3: Acceleration</u></h3>
                             <br>
+                            <h5>
+                                For this part of the lab, I tried to measure the acceleration of the car using the accelerometer. This measurement was done by temporarily taping the Artemis and sensors onto the car with a battery, and sending
+                                 the IMU data to my computer using what I learned in lab 2.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab4/img/car_setup.jpg" alt="i2c_address">
+                            </div>
                             <br>
+                            <h5>
+                                However, I was not able to get good data from the accelerometer or gyro. The best I was able to get is shown below.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab4/img/accel_data.png" alt="i2c_address">
+                            </div>
                             <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h5>
+                                I am at least able to tell that the car can accelerate at least at 2g's. Part of what made this test so difficult is that I was unable to perform this indoors, and had to go out on a road to get enough space for the car
+                                 to accelerate for a decent amount of time. Outdoor roads seem to be too bumpy for this car to handle, show that smooth surfaces are likely needed for this robot. A second issue I encountered is that the car drifts strongly to the right when 
+                                 under full acceleration. PID could handle this, but I think it will also be a good idea to set a speed limit on the car.<br>
+                                 In general, the two conclusions I came to from this experiment is that my final car will have a speed limit and will be driven indoor on smooth surfaces.
+                            </h5>
+                            </h4>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +169,6 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
+
+
