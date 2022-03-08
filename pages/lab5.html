@@ -37,47 +37,92 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to switch from controlling the car manually with a remote, to controlling the car with open-loop control using the Artemis Nano.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                The motors for the car will be controlled using 2 motor controller modules. Each module has two h-bridges, and each module is connected to one motor. Doing this allows 
+                                use to double the current per motor. The left motor controller will be connected to pins 2 and 3 on the Artemis, and the right motor will be connected to pins 14 and 15. 
+                                These pins were chosen due to their convenient proximity and because they are both capable of producing a PWM signal.
+                                <br>
+                                <br>
+                                Now that the board is on the car, it must be powered through a battery. Two separate batteries are used for the board and motor. The connections between the batteries, motor controllers, 
+                                and Artemis are all made using stranded wires, and data wires are routed to avoid being near the motors, as the motors create a lot of noise.
+                            </h5>
+                            <br>
+                            <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
+                            <br>
+                            <h3><u>Part 1 Initial Control:</u></h3>
+                            <h5>
+                                To begin, a motor controller was tested using a bench power supply and an oscilloscope. The bench power supply is set to 3.7V to mimic the battery powering the motors. 
+                                The controller is then given a PWM signal using <code>analogWrite(3, 25);</code>. The image below show the oscilloscope reading.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab5/img/oscope.jpg" alt="i2c_address">
+                            </div>
+                            <br>
+                            <h5>
+                                The o-scope shows very short high spikes, followed by longer lasting lows. This is consistent with what would be expected with an analogWrite of 25.
+                            </h5>
+                            <br>
+                            <br>
+                            <h3><u>Part 2: Driving</u></h3>
+                            <h5>
+                                The car is driven using 4 analog writes, one for each h-bridge. I decided to make a "Car" class in C++ to keep things organized. A function <code>forward(int v)</code> is used in 
+                                to do drive the car forward, where v is the value written to the analogWrite. I noticed the right motors were driving faster than the left motors as well, so an offset of 25 was added 
+                                to the left motors. This seems to keep everything running at the same pace, but shouldn't be needed when PID is implemented.
+                                <br>
+                                <br>
+                                To drive the car forward in a straight line, I wrote:
+                                <code>
+                                    <br>
+                                    <br>
+                                    for(int i=75; i<127; i++){<br>
+                                        &nbsp car.forward(i);<br>
+                                        &nbsp delay(50);<br>
+                                    }<br><br>
+                                </code>
+                                The first thing of note in this code is that ‘i’ starts at 75. This is about the lowest value I can write to a motor to make it rotate. This value was found experimentally. 
+                                All the writes are in a for loop with a short delay to slowly ramp up the motor as I didn't want the car to immediately take off. The video below shows the car driving down a straight line.
+                            </h5>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/lab5/vid/line.mp4" type="video/mp4">
+                                </video>
+                            </div>
                             <br>
                             <br>
                             <br>
+                            <h3><u>Part 3: Frequency Control</u></h3>
                             <br>
+                            <h5>
+                                Lastly, I implemented the code from lab 1 to read the loudest frequency heard by the Artemis. I then programmed the Artemis to only drive when it has heard a frequency between 
+                                1400 and 1600 Hz, which is the frequency I tend to whistle at. This can be seen below.
+                            </h5>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/lab5/vid/freq.mp4" type="video/mp4">
+                                </video>
+                            </div>
                             <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h5>
+                                An interesting effect I noticed is that the car itself generates a loud noise when it drives, which is then picked up by the Artemis. This may be useful for more sensor fusion, 
+                                as the frequency from the car may be proportional to the speed it's driving. I have yet to test this though.
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +180,4 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
