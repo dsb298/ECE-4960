@@ -37,47 +37,115 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to map out a small room by using spinning the robot around, and using the TOF sensor to measure the distance to the robots distance to each wall as it spins.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                TThere were two ways to go about this lab. Either spin the robot continuously as it took TOF readings, or have the robot stop mid spin when it takes it's measurments. I decided to have my robot
+                                spin continuously. I chose to do this because I noticed my right wheels dont spin as well as my left. This causes the robot to not spin smoothly when it initially starts spinning.
+                                <br>
+                                <br>
+                                On top of this, I also spin my robot much faster than the recommended speed of 25 degrees per second. This is also to overcome the extra resistance in my right wheels. I ended up getting my robot to spin at
+                                160 degrees per second. This caused extra drift with the IMU, but that error was much less than the error caused by my robot not spinning well at low speeds.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
                             <br>
+                            <h3><u>Part 1: Spinning:</u></h3>
+                            <h5>
+                                I was able to get my robot to spin in place pretty reliably at a higher speed, as can be seen in the video below.
+                            </h5>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/lab9/vid/spinny.mp4" type="video/mp4">
+                                </video>
+                            </div>
                             <br>
+                            <h5>
+                                The robot certainly changes it's orientation during the spin, but the error ended up being a lot less than what I expected given the speed at which it spins.
+                                the 5 graphs below show the polar coordinates of the ToF measurements. These coordinates includes the points from the second rotation, which I expected would cause a lot of error.
+                                However, you'll notice that points on close edges of the walls are consistent, showing that there isn't much error between the first and second rotation.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab9/img/output.png" alt="output">
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab9/img/output1.png" alt="output">
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab9/img/output2.png" alt="output">
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab9/img/output3.png" alt="output">
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab9/img/output4.png" alt="output">
+                            </div>
                             <br>
+                            <h5>
+                                I ended up using the integrated gyroscope values to make these plots. I also noticed my gyroscope values were a little off center. I believe this is because I started rotating before taking
+                                my first measurement, or just error from the gyroscope. I ended up rotating the polar coordinates to get them placed correctly by adding a small offset to the radian measurement for each graph,
+                                 I also convert each measurement to radians from degrees as this is needed to plot in polar coordinates in matplotlib.
+                                An example of this can be seen in this code :
+                                <br>
+                                <br>
+                                <code>
+                                    def MakeMap(map, offset=0):<br>
+                                    &nbsp    prevDist = 0<br>
+                                    &nbsp    newData = [[],[]]<br>
+                                    &nbsp    for i, j in map:<br>
+                                    &nbsp &nbsp       if j != prevDist:<br>
+                                    &nbsp &nbsp &nbsp         newData[0].append(i/180.0*np.pi-offset)<br>
+                                    &nbsp &nbsp &nbsp          newData[1].append(j)<br>
+                                    &nbsp &nbsp       prevDist = j<br>
+                                    &nbsp    return newData<br>
+                                </code>
+                                <br>
+                                <code>map1Data = MakeMap(map1, .2)</code>
+                            </h5>
                             <br>
+                            <h3><u>Part 2: Map</u></h3>
+                            <h5>
+                                To make the map I translated each set of measurements to where they were taken, using location 0,0 as the origin. I did not have to add any rotation when doing that as I had 
+                                just done this while the coordinates were in polar form. When putting all the graphs together, I successfully got an outline of the room.
+                            </h5>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab9/img/map.png" alt="output">
+                            </div>
                             <br>
+                            <h5>
+                                I then traced out the lines to get a rough estimate of how the room is shaped.
+                            </h5>
                             <br>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab9/img/maplin.png" alt="output">
+                            </div>
                             <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h5>
+                                This closely resembles the actual area the measurements were taken in. Lastly, the data to trace out the room was saved into four arrays that will be used for the simulator in lab 10.
+                                <br>
+                                <br>
+                                <code>
+                                    wallx = [-1550, -150, -150, 250, 250, 1900, 1900, -700, -700, -1550, -1550]<br>
+                                    wally = [-1250, -1250, -900, -900, -1250, -1250, 1300, 1300, 50, 50, -1250]<br>
+                                    boxx = [750, 1400, 1400, 750, 750]<br>
+                                    boxy = [-100, -100, 500, 500, -100]<br>
+                                </code>
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +203,4 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+

@@ -37,47 +37,117 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to set up a simulator for our robot to navigate the maze from lab 9.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                Most of this lab was spent setting up the simulator. The simulator was made in python and is run through Jupyter Lab. 
+                                With the simulator setup, simple simulations of the robot navigating the room were made to ensure understanding of the simulator.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
                             <br>
+                            <h3><u>Part 1: Functionalities:</u></h3>
+                            <h5>
+                                The simulator can be run through a simple GUI or by the commands<br>
+                                <code>START_SIM()</code><br>
+                                <code>STOP_SIM()</code><br>
+                                <code>RESET_SIM()</code><br>
+                                <code>START_PLOTTER()</code><br>
+                                <code>STOP_PLOTTER()</code><br>
+                                <code>RESET_PLOTTER</code><br>
+                                <br>
+                                <br>
+                                The simulator can then be run through commands or using the mouse and keyboard. This the following sections of this lab make use of the commands, which can be seen below.
+                            </h5>
+                            <div style="text-align: center;">
+                                <video width="500" height="375" controls>
+                                    <source src="../assets/lab9/vid/spinny.mp4" type="video/mp4">
+                                </video>
+                            </div>
                             <br>
+                            <h5>
+                                The robot certainly changes its orientation during the spin, but the error ended up being a lot less than what I expected given the speed at which it spins.
+                                the 5 graphs below show the polar coordinates of the ToF measurements. These coordinates include the points from the second rotation, which I expected would cause a lot of error.
+                                However, you'll notice that points on close edges of the walls are consistent, showing that there isn't much error between the first and second rotation.
+                            </h5>
                             <br>
+                            <div style="text-align: center;">
+                                <img src="../assets/lab10/img/commandclass.jpg" alt="output">
+                            </div>
                             <br>
-                            <br>
-                            <br>
-                            <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h3><u>Part 2: Open Loop Control</u></h3>
+                            <h5>
+                                For this portion of the lab, I made my robot drive in a square using open loop control. The outline of the square can be seen below.
+                                <br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab10/img/part2.jpg" alt="output">
+                                </div>
+                                <br>
+                                Getting the robot to drive in the square took trial and error, as the robot was unable to make decisions for itself. The green box is the path the robot followed, whereas the red is the odometry reading from the robot.
+                                As can be seen, the odometry reading is not very reliable. The code used to make these plot can be seen here:
+                                <br>
+                                <code>
+                                    pose, gt_pose = cmdr.get_pose()<br>
+                                    cmdr.plot_odom(pose[0], pose[1])<br>
+                                    cmdr.plot_gt(gt_pose[0], gt_pose[1])<br>
+                                </code>
+                                <br>
+                                To make the robot go forward, I used <code>cmdr.set_vel(.3, 0)</code> and to turn I used <code>cmdr.set_vel(0, 1.04)</code>. Between these movements, I used <code>asyncio.sleep</code> and adjusted the amount of time slept for forward movements and turns until it drove in a square.
+                                I ended up having the robot go forward for 1.5 seconds, and turn for 1.04 seconds. Open loop control is not ideal, especially when trying to repeat this square. After running the robot in a square three times, the robots path drifted by a noticeable amount.
+                                <br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab10/img/part22.jpg" alt="output">
+                                </div>
+                                <br>
+                            </h5>
+                            <h3><u>Part 2: Closed Loop Control</u></h3>
+                            <h5>
+                                Next, I made the robot navigate around the room using closed loop control. The controller is very simple, and the code can be seen below.
+                                <code>
+                                    while(1):<br>
+                                    &nbsp    dist = cmdr.get_sensor()<br>
+                                    &nbsp    if dist - setpoint <= .25:<br>
+                                    &nbsp&nbsp        PTurn()<br>
+                                    &nbsp    else:<br>
+                                    &nbsp&nbsp        PForward()<br>
+                                </code>
+                                <br>
+                                The setpoint I gave the robot was .1.
+                                <br>
+                                <br>
+                                I wanted to have the robot turn 90 degrees after and obstacle, but found this very unreliable when using the <code>get_pose()</code> command.
+                                 This is due to the command running slow compared to the speed at which the robot turns. I had to turn the robot at extremely slow speed to make this 
+                                method reliable, which is not worthwhile.
+                                <br>
+                                <br>
+                                Two other methods of turn I thought of involved basing it off the front sensor. One way would be to just turn whenever you're too close to a wall until your distance from the wall is greater than some threshold. 
+                                another similar way would be to have the robot spin on its axis until it found the furthest distance to a wall from where it currently is. However, all three methods above lead to the same issue which can be seen in the video below.
+                                <br>
+                                <div style="text-align: center;">
+                                    <video width="500" height="375" controls>
+                                        <source src="../assets/lab9/img/sim.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                                Because the robot is entirely dependent on its front sensor, it will hit walls due to the robots width. The .1 setpoint I have the robot seems to be about how close it can get directly to a wall without it ever hitting when turning around, 
+                                but this doesn't prevent situations when the robot drives close to a wall on one of its sides. It may be possible to make a simple controller that prevents the robot from crashing by having it spin on its axis to figure out where to go next,
+                                but I did not implement this. A better solution will be implemented in lab 11. As for the robot’s max speed, I found it to be about .8. Anything higher would cause the robot to occasionally crash into a wall with a setpoint of .1.
+
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +205,5 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
+
