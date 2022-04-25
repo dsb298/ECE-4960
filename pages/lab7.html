@@ -44,7 +44,7 @@
                             </div>
                             <br>
                             <h5>
-                                The purpose of this lab is to map out a small room by using spinning the robot around, and using the TOF sensor to measure the distance to the robots distance to each wall as it spins.
+                                The purpose of this lab is to set up a kalman filter for the robot. The reason for the kalman filter is to help the robot compensate for its slow ToF sensors.
                             </h5>
                             <br>
                             <br>
@@ -52,12 +52,7 @@
                                 <h2>Setup</h2>
                             </div>
                             <h5>
-                                TThere were two ways to go about this lab. Either spin the robot continuously as it took TOF readings, or have the robot stop mid spin when it takes it's measurments. I decided to have my robot
-                                spin continuously. I chose to do this because I noticed my right wheels dont spin as well as my left. This causes the robot to not spin smoothly when it initially starts spinning.
-                                <br>
-                                <br>
-                                On top of this, I also spin my robot much faster than the recommended speed of 25 degrees per second. This is also to overcome the extra resistance in my right wheels. I ended up getting my robot to spin at
-                                160 degrees per second. This caused extra drift with the IMU, but that error was much less than the error caused by my robot not spinning well at low speeds.
+                                There is not real setup for this lab other than noting that I will be preforming stunt A, which is driving and a wall, doing a flip, then driving back.
                             </h5>
                             <br>
                             <br>
@@ -65,86 +60,44 @@
                                 <h2>Lab Sections</h2>
                             </div>
                             <br>
-                            <h3><u>Part 1: Spinning:</u></h3>
+                            <h3><u>Part 1: Step Response:</u></h3>
                             <h5>
-                                I was able to get my robot to spin in place pretty reliably at a higher speed, as can be seen in the video below.
-                            </h5>
-                            <div style="text-align: center;">
-                                <video width="500" height="375" controls>
-                                    <source src="../assets/lab9/vid/spinny.mp4" type="video/mp4">
-                                </video>
-                            </div>
-                            <br>
-                            <h5>
-                                The robot certainly changes it's orientation during the spin, but the error ended up being a lot less than what I expected given the speed at which it spins.
-                                the 5 graphs below show the polar coordinates of the ToF measurements. These coordinates includes the points from the second rotation, which I expected would cause a lot of error.
-                                However, you'll notice that points on close edges of the walls are consistent, showing that there isn't much error between the first and second rotation.
-                            </h5>
-                            <div style="text-align: center;">
-                                <img src="../assets/lab9/img/output.png" alt="output">
-                            </div>
-                            <div style="text-align: center;">
-                                <img src="../assets/lab9/img/output1.png" alt="output">
-                            </div>
-                            <div style="text-align: center;">
-                                <img src="../assets/lab9/img/output2.png" alt="output">
-                            </div>
-                            <div style="text-align: center;">
-                                <img src="../assets/lab9/img/output3.png" alt="output">
-                            </div>
-                            <div style="text-align: center;">
-                                <img src="../assets/lab9/img/output4.png" alt="output">
-                            </div>
-                            <br>
-                            <h5>
-                                I ended up using the integrated gyroscope values to make these plots. I also noticed my gyroscope values were a little off center. I believe this is because I started rotating before taking
-                                my first measurement, or just error from the gyroscope. I ended up rotating the polar coordinates to get them placed correctly by adding a small offset to the radian measurement for each graph,
-                                 I also convert each measurement to radians from degrees as this is needed to plot in polar coordinates in matplotlib.
-                                An example of this can be seen in this code :
+                                The step response was determined by driving the robot at a wall and measuring its distance to the wall, pwm values, and elapsed time. I was able to tune the PID controller well in lab 6, so the robot drives at the wall at a decent speed without crashing. This can be seen below:
+                                <div style="text-align: center;">
+                                    <video width="500" height="375" controls>
+                                        <source src="../assets/lab7/img/stepvid.mp4" type="video/mp4">
+                                    </video>
+                                </div>
                                 <br>
+                                The maximum PWM signal given was 75. I seemed to reach steady state for a short period with this run as well, but it can be a little hard to tell with noise from the front sensor.
+                                The graphs below show the ToF readings, velocity, and motor inputs respectively. The velocity graph also includes an orange line to indicate steady state.
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab7/img/distance_graph.png" alt="output">
+                                </div>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab7/img/steady_state.png" alt="output">
+                                </div>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab9/img/pwm_graph.png" alt="output">
+                                </div>
                                 <br>
-                                <code>
-                                    def MakeMap(map, offset=0):<br>
-                                    &nbsp    prevDist = 0<br>
-                                    &nbsp    newData = [[],[]]<br>
-                                    &nbsp    for i, j in map:<br>
-                                    &nbsp &nbsp       if j != prevDist:<br>
-                                    &nbsp &nbsp &nbsp         newData[0].append(i/180.0*np.pi-offset)<br>
-                                    &nbsp &nbsp &nbsp          newData[1].append(j)<br>
-                                    &nbsp &nbsp       prevDist = j<br>
-                                    &nbsp    return newData<br>
-                                </code>
-                                <br>
-                                <code>map1Data = MakeMap(map1, .2)</code>
+                                I found the steady state speed to be 1225 mm/s. 90% of this value is about 1102 mm/s, which takes 1.1 seconds to reach. With this, I was able to compute the A and B matrices by solving for drag and mass. Drag is found by dividing the step, which is taken as 1, by the steady state speed.
+                                Mass is then found by multiplying the 90% rise time by the drag, then dividing by the natural log of .1.
                             </h5>
-                            <br>
-                            <h3><u>Part 2: Map</u></h3>
+
+                            <h3><u>Part 2: Kalman Filter setup</u></h3>
                             <h5>
-                                To make the map I translated each set of measurements to where they were taken, using location 0,0 as the origin. I did not have to add any rotation when doing that as I had 
-                                just done this while the coordinates were in polar form. When putting all the graphs together, I successfully got an outline of the room.
+                                To begin the kalman filter, the process noise and sensor noise must be determined. Three separate sigma values must be chosen to determine these. For now, these values have been chosen based off what was chosen in lecture. sigma1=10, sigma2=10, and sigma3=20.
+                                The C matrix used is the one provided in the lab handout, C=[-1, 0].
                             </h5>
-                            <div style="text-align: center;">
-                                <img src="../assets/lab9/img/map.png" alt="output">
-                            </div>
-                            <br>
+
+                            <h3><u>Part 3: Checking Kalman Filter</u></h3>
                             <h5>
-                                I then traced out the lines to get a rough estimate of how the room is shaped.
-                            </h5>
-                            <br>
-                            <div style="text-align: center;">
-                                <img src="../assets/lab9/img/maplin.png" alt="output">
-                            </div>
-                            <br>
-                            <h5>
-                                This closely resembles the actual area the measurements were taken in. Lastly, the data to trace out the room was saved into four arrays that will be used for the simulator in lab 10.
-                                <br>
-                                <br>
-                                <code>
-                                    wallx = [-1550, -150, -150, 250, 250, 1900, 1900, -700, -700, -1550, -1550]<br>
-                                    wally = [-1250, -1250, -900, -900, -1250, -1250, 1300, 1300, 50, 50, -1250]<br>
-                                    boxx = [750, 1400, 1400, 750, 750]<br>
-                                    boxy = [-100, -100, 500, 500, -100]<br>
-                                </code>
+                                The filter is checked by running it on data collected from lab 6. However, I no longer have this data, so I ended up collecting new data.
+                                With this, I was able to run my kalman filter. The sigma values I used seemed to work well, as can be seen from the graph below.
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab9/img/kalman.png" alt="output">
+                                </div>
                             </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
@@ -203,4 +156,5 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
 
