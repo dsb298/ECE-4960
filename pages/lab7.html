@@ -65,20 +65,20 @@
                                 The step response was determined by driving the robot at a wall and measuring its distance to the wall, pwm values, and elapsed time. I was able to tune the PID controller well in lab 6, so the robot drives at the wall at a decent speed without crashing. This can be seen below:
                                 <div style="text-align: center;">
                                     <video width="500" height="375" controls>
-                                        <source src="../assets/lab7/img/stepvid.mp4" type="video/mp4">
+                                        <source src="../assets/lab7/stepvid.mp4" type="video/mp4">
                                     </video>
                                 </div>
                                 <br>
                                 The maximum PWM signal given was 75. I seemed to reach steady state for a short period with this run as well, but it can be a little hard to tell with noise from the front sensor.
                                 The graphs below show the ToF readings, velocity, and motor inputs respectively. The velocity graph also includes an orange line to indicate steady state.
                                 <div style="text-align: center;">
-                                    <img src="../assets/lab7/img/distance_graph.png" alt="output">
+                                    <img src="../assets/lab7/distance_graph.png" alt="output">
                                 </div>
                                 <div style="text-align: center;">
-                                    <img src="../assets/lab7/img/steady_state.png" alt="output">
+                                    <img src="../assets/lab7/steady_state.png" alt="output">
                                 </div>
                                 <div style="text-align: center;">
-                                    <img src="../assets/lab9/img/pwm_graph.png" alt="output">
+                                    <img src="../assets/lab7/pwm_graph.png" alt="output">
                                 </div>
                                 <br>
                                 I found the steady state speed to be 1225 mm/s. 90% of this value is about 1102 mm/s, which takes 1.1 seconds to reach. With this, I was able to compute the A and B matrices by solving for drag and mass. Drag is found by dividing the step, which is taken as 1, by the steady state speed.
@@ -96,7 +96,7 @@
                                 The filter is checked by running it on data collected from lab 6. However, I no longer have this data, so I ended up collecting new data.
                                 With this, I was able to run my kalman filter. The sigma values I used seemed to work well, as can be seen from the graph below.
                                 <div style="text-align: center;">
-                                    <img src="../assets/lab9/img/kalman.png" alt="output">
+                                    <img src="../assets/lab7/kalman.png" alt="output">
                                 </div>
                             </h5>
                         </h4>
