@@ -37,47 +37,139 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to simulate grid localization using the simulator from lab 10. The grid localization is done using a bayes filter. 
+                                The algorithm used to implement the filter can be seen below: <br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab11/img/bayes_algo.PNG" alt="output">
+                                </div>
+                                <br>
+                                The point of this algorithm is to calculate the probability that you are in a specific position, given a previous position and an input to move the robot. 
+                                This algorithm is extremely computationally expensive, as you must do this calculation for virtually every possible location and orientation your robot could have been.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                The only setup for this lab was to download a given python notebook. This notebook contains skeleton code for our bayes filter.
+                            </h5>
                             <br>
                             <br>
-                            test
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
                             <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h3><u>Part 1: Implementation:</u></h3>
+                            <h5>
+                                The lab was implemented by follow the skeleton code provided. This code is broken up into five functions:
+                                <br>
+                                <code>compute_control(cur_pose, prev_pose)</code>
+                                <br>
+                                <code>odom_motion_model(cur_pose, prev_pose, u)</code>
+                                <br>
+                                <code>prediction_step(cur_odom, prev_odom)</code>
+                                <br>
+                                <code>sensor_model(obs)</code>
+                                <br>
+                                <code>update_step()</code>
+                                <br>
+                                <br>
+                                As can be seen, two of these functions are the prediction and update steps shown in the bayes algorithm above. The <code>compute_control(cur_pose, prev_pose)</code> function is used to compute the 
+                                rotations and translations of the robot, and is done using the following code: <br><br>
+
+                                <code>delta_rot_1 = np.arctan2(cur_pose[1]-prev_pose[1], cur_pose[0]-prev_pose[0])-prev_pose[2]</code>
+                                <code>delta_trans = np.sqrt((cur_pose[1]-prev_pose[1])**2 + (cur_pose[0]-prev_pose[0])**2)</code>
+                                <code>delta_rot_2 = cur_pose[2] - prev_pose[2] - delta_rot_1</code>
+                                <br><br>
+
+                                The next function <code>odom_motion_model(cur_pose, prev_pose, u)</code> is used to find the probability that we ended up in a certain position after applying a control input. This probability is found using 
+                                a gaussian distribution in the code below: <br><br>
+
+                                <code>dr1, dt, dr2 = compute_control(cur_pose, prev_pose)</code>
+                                <code>prob = loc.gaussian(normalize_angle(dr1-u[0]),0,loc.odom_rot_sigma)*loc.gaussian(dt-u[1],0,loc.odom_trans_sigma)*loc.gaussian(normalize_angle(dr2-u[2]),0,loc.odom_rot_sigma)</code>
+                                <br><br>
+
+                                The <code>prediction_step(cur_odom, prev_odom)</code> is the most compicated function. This function iterates through every possible position the robot could have been to predict where the robot is now. This 
+                                function is mainly why a bayes filter is so slow. An alternative to this could have been to use a particle filter, doing so would have sped up the prediction. However, the bayes filter is the basis of probabilistic robots like these, 
+                                and is worthwhile to learn before using other methods. The code used for the prediction step can be seen below:
+                                <br><br>
+                                <code>
+                                loc.bel<br>
+                                u = compute_control(cur_odom, prev_odom)<br>
+                                loc.bel_bar = np.zeros_like(loc.bel_bar)<br>
+                                # Pseudocode: <br>
+                                # Loop over every bel(x). If bel(X) is zero, skip. Else, perform bel_bar update for all cells with bel(X). Repeat over all bel_X<br>
+                                for ix in range(mapper.MAX_CELLS_X):<br>
+                                &nbsp    for iy in range(mapper.MAX_CELLS_Y):<br>
+                                &nbsp&nbsp        for itheta in range(mapper.MAX_CELLS_A):<br>
+                                &nbsp&nbsp&nbsp            # IF BEL IS GREATER THAN ZERO START SUMMING<br>
+                                &nbsp&nbsp&nbsp            if loc.bel[ix, iy, itheta] > 0.0001:<br>
+                                &nbsp&nbsp&nbsp&nbsp                # If bel is greater than 0, than perform all updates. Else pass.<br>
+                                &nbsp&nbsp&nbsp&nbsp                for ix_bar in range(mapper.MAX_CELLS_X):<br>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp                    for iy_bar in range(mapper.MAX_CELLS_Y):<br>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp                        for itheta_bar in range(mapper.MAX_CELLS_A):<br>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp                            # UPDATE ALL CELLS IN CURRENT STATE<br>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp                            curr_pose = mapper.from_map(ix, iy, itheta)<br>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp                            loc.bel_bar[ix_bar, iy_bar, itheta_bar] +=  (loc.bel[ix, iy, itheta])*odom_motion_model(mapper.from_map(ix_bar, iy_bar, itheta_bar), mapper.from_map(ix, iy, itheta), u)<br>
+                                &nbsp&nbsp&nbsp            else:<br>
+                                &nbsp&nbsp&nbsp&nbsp                pass<br>
+                                # Normalize your bel_bar matrix<br>
+                                loc.bel_bar = loc.bel_bar / np.sum(loc.bel_bar)<br>
+                                </code><br><br>
+
+                                The next function is <code>sensor_model(obs)</code>. Since we cannot trust our sensors completely, we will also take into account the probability that the sensor reading we have is correct using the current orientation of the robot.
+                                This funtion is much simpler than the previous one, and can be seen below:<br><br>
+
+                                <code>
+                                views = mapper.get_views(obs[0], obs[1], obs[2])<br>
+                                prob_array = np.zeros(18)<br>
+                                for i, ob in enumerate(loc.obs_range_data[:,0]):<br>
+                                &nbsp    prob_array[i] = loc.gaussian(views[i], ob, loc.sensor_sigma)<br>
+                                return prob_array<br>
+                                </code>
+                                <br><br>
+
+                                Lastly, the update step of the algorithm. The name of this step is somewhat self explanitory. It is used to update the our belief for each position of the robot. <br><br>
+
+                                <code>
+                                for ix in range(mapper.MAX_CELLS_X):<br>
+                                for iy in range(mapper.MAX_CELLS_Y):<br>
+                                    for itheta in range(mapper.MAX_CELLS_A):<br>
+                                    #######################################<br>
+                                        pz = sensor_model(np.array([ix, iy, itheta]))<br>
+                                        loc.bel[ix, iy, itheta] = np.prod(pz)*loc.bel_bar[ix, iy, itheta]<br>
+                                loc.bel = loc.bel / np.sum(loc.bel)<br><br>
+                                </code>
+
+                            <h3><u>Part 2: Outcome</u></h3>
+                            <h5>
+                                We can now see the outcome of the algorithm implemented. Below is a graph of the robot preforming this algorithm. The odometer readings are in red, the belief is in blue, and the ground truth in green.
+                                <br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab11/img/filtered.PNG" alt="output">
+                                </div>
+                                <br><br>
+                                As can be seen, the ground truth and belief are very close to each other. The odometer is a bit off, but this is because the real one is extremely noise, and this noise is added to the simulation. Despite being off,
+                                it is still a significant improvement compared to the previous odometer reading from lab 10, which can be seen below.<br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab11/img/part22.jpg" alt="output">
+                                </div>
+                                <br><br>
+                                Lastly, here is a video to show the simulation in action.
+                                <div style="text-align: center;">
+                                    <video width="750" height="500" controls>
+                                        <source src="../assets/lab11/img/simulation.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +227,5 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
+
