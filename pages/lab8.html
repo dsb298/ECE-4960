@@ -37,47 +37,40 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to combine labs 6 and 7 to perform fast stunts. Unfortunately, I was not able to get my Kalman filter working well.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                I first tried PID without the Kalman filter, since my PID works very well. I quickly found it didn't matter how well the PID works, the front sensor just 
+                                can't read fast enough. This meant I had to drive slowly to get reliable data. The speed I had to drive with PID was way too slow to be able to perform a flip.
+                                <br>
+                                <br>
+                                Because of this, I had to switch to open loop control. This is unfortunate as it makes the robot only somewhat reliable when under very specific circumstances.
+                                While I was able to get the robot to do a flip and return 108 degrees from where it came, I was not able to get it on video. The wheels on my robots turn at different 
+                                rates depending on how fast the robot is going. The right wheels tend to spin faster when writing lower values, and the left wheels tend to spin faster at higher values.
+                                The video I got does show a stunt, but the robot also turns during the stunt.
+                                <br>
+                                <div style="text-align: center;">
+                                    <video width="500" height="375" controls>
+                                        <source src="../assets/lab8/stunt.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                                Open loop control isn't the place for a task like this, so I will likely return to this to try again with the Kalman filter if time permits at the end of the semester.
+                                <br>
+                            </h5>
                             <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +128,5 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
+
