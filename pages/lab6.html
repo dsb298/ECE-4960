@@ -37,47 +37,135 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to set up PID control on the robot. I chose to implement the entire controller, as I found it to be very beneficial.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                There is no real setup for this lab other than choosing a task. I chose to do task A, which is to drive at a wall using PID, and stop at 300mm.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
                             <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h3>Task A: Don't hit the wall!!</h3>
+                            <h5>
+                                I began this lab by setting up my P control. The code for the P is simple, and can be seen below:<br><br>
+                                <code>
+                                    int dist = getFrontDist();<br>
+                                    float error = float(val - dist);<br><br><br>
+                                </code>
+                                This is all there is to calculate the error for the P term. The error is very intuitive to understand; it's just how much further you have to go until you reach your goal. In this case 300mm, represented by the val term. I started with a P constant of 1 and worked my way down until the robot didn't crash into a wall. 
+                                I didn't spend too much time messing with it to begin with, as I new it would need to be changed later. I settled on .8 to start.<br><br>
+                                
+                                After having the P term implemented, I added the I term. The I term is important for this robot due to its weak motors. The robot will often end up with some steady state error near its goal or will have trouble when first starting to move when driving at low speeds.
+                                The code for the I term can be seen below:<br><br>
+                                <code>
+                                    if(ctr >= STARTID){<br>
+                                    &nbsp     //INTEGRAL TERM<br>
+                                    &nbsp     if(currState != prevState)<br>
+                                    &nbsp&nbsp        integral = 0;<br>
+                                    &nbsp     else<br>
+                                    &nbsp&nbsp        integral += error*dt;<br>
+                                    &nbsp     // clamp<br>
+                                    &nbsp     if(integral > MAX_INTEGRAL)<br>
+                                    &nbsp&nbsp        integral = MAX_INTEGRAL;<br>
+                                    &nbsp     else if(integral < -1*MAX_INTEGRAL)<br>
+                                    &nbsp&nbsp        integral = -1*MAX_INTEGRAL;<br>
+                                    &nbsp     if(error == 0)<br>
+                                    &nbsp&nbsp        integral = 0;<br>
+                                    }<br><br><br>
+                                </code>
+                                This code begins with a conditional. A counter must be reached before the integral term can be used. <code>STARTID</code> is a constant set to 10. The point of this is to reduce integrator windup, which was an issue I face for a while. 
+                                Next is another conditional for the robot’s state. This is also to remove windup. The state indicates if the robot is going forwards or backwards. If the robot has windup when switching states, the value written to the robot will be messed up.
+                                To fix this, I reset the integrator whenever a state is switched. The else statement is the actual integrator term. This term sums up the error over time and is the area under the error curve. Finally, the clamp is used to set a max integral term.
+                                If the integrator gets too large, it may take complete control over the P and D terms. The clamp sets a max value the integral term can have. I settled on an integral term of .025. This seems high but works very well. I believe the reason it works when 
+                                this large is because of the slow PID loop. Every loop waits for a sensor reading, so the integrator does not accumulate that much over the short period of time the robot drives.<br><br>
+
+                                Finally, the derivative term. This term is actually withing the <code>if(ctr >= STARTID)</code> with the I term.<br><br><br>
+                                <code>
+                                     // DERIVATIVE TERM<br>
+                                     float dP = error-prevError;<br>
+                                     if(dP == 0)<br>
+                                    &nbsp  derivative = derivative;<br>
+                                     else<br>
+                                    &nbsp  derivative = dP/dt;<br>
+                                     // filter<br>
+                                     filter = alpha*derivative + (1-alpha)*filter;<br>
+                                </code><br><br>
+                                The derivative term is used for breaking. The derivative term was the least needed for my robot, and often made things worse. However, when it works it makes a massive difference. With an aggressive D constant of .3, I was able to stop on a dime, but this was unreliable. I kept the term at .12, which makes a consistent difference, 
+                                but overshooting would still happen. The D term is the slope of the error graph. This can be seen by the lines <code>float dP = error-prevError;</code> and <code>derivative = dP/dt;</code>. The derivative term 
+                                is also passed through a filter. This part was extremely important to prevent huge fluctuations.<br><br>
+
+                                The control term for the motors is then decided with the line <code>float control = error*kp + integral*ki + derivative*kd;</code> The control term is fed into some logic below:<br><br><br>
+                                <code>
+                                    // if need to go forward<br>
+                                    if(control < -50){<br>
+                                    &nbsp  counter = 0;<br>
+                                    &nbsp  control *= -1;<br>
+                                    &nbsp  if(control > thisMax){<br>
+                                    &nbsp&nbsp    forward(thisMax);<br>
+                                    &nbsp  }<br>
+                                    &nbsp  else{<br>
+                                    &nbsp&nbsp    forward(control);<br>
+                                    &nbsp  }<br>
+                                    &nbsp  currState = 0;<br>
+                                    }<br>
+                                    // if need to reverse<br>
+                                    else if(control > 50){<br>
+                                    &nbsp  counter = 0;<br>
+                                    &nbsp  if(control > thisMax){<br>
+                                    &nbsp&nbsp    reverse(thisMax);<br>
+                                    &nbsp  }<br>
+                                    &nbsp  else{<br>
+                                    &nbsp&nbsp    reverse(control);<br>
+                                    &nbsp  }<br>
+                                    &nbsp  currState = 1;<br>
+                                    }<br>
+                                    else{<br>
+                                    &nbsp  halt();<br>
+                                    }<br><br><br>
+                                </code>
+
+                                This logic checks if the control is greater than 50, less than -50, or between. Any values between those two counts as arriving at the destination, and the robot will halt.
+                                Less than 50 means the car must go forward. However, the term written to the motors must be positive. So, this term is immediately multiplied by a -1. Logic is then used to determine 
+                                if the control value is greater than the robot’s maximum allowable speed. If it is, the maxSpeed is written instead of control. otherwise, control is written. If control is greater than 50, 
+                                the car must reverse. The same logic applies here that applied to going forward.<br><br>
+
+                                I was able to collect data from my PID run. The first graph is of the distance over time.<br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab6/img/vel.png" alt="output">
+                                </div>
+                                <br>
+                                This graph shows the movement of the robot. It gradually speeds up, as can be seen by the increasing slope, then over shoots and reverses a little bit. This follows with the video at the end.<br><br>
+                                The next graph is the pwm values over time<br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab6/img/pwm.png" alt="output">
+                                </div>
+                                <br>
+                                This one is a little weird since my PID is aggressive and overshoots a little. The extreme transition from negative to positive show the change from forwards movement to backwards. Due to my dead band of 50, the robot settles at a pwm value of around 40. The video 
+                                demonstrating my PWM can be seen below. The robot comes extremely close to hitting the wall but doesn't actually hit. I felt this extreme movement for my robot was worth it. Have a perfect PID would require driving the robot at extremely slow speeds due to the slow sensors.
+                                I was able to drive my robot at a reasonably fast speed, but at the cost of some overshoot.<br><br>
+
+                                <div style="text-align: center;">
+                                    <video width="500" height="375" controls>
+                                        <source src="../assets/lab6/img/vid.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                                <br>
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
