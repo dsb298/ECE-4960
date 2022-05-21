@@ -37,47 +37,68 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to navigate through a set of waypoints within a maze. I used PID control throughout the maze to accomplish this.
+                            </h5>
                             <br>
                             <br>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
                             <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h3>Part 1: Rotations</h3>
+                            <h5>
+                                The path that needed to be followed can be seen below. <br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab13/waypoints.png" alt="output">
+                                </div>
+                                <br>
+                                I split each section up into a rotation followed by a forward movement. The rotations are controlled through PID using the gyroscope the same way as in previous labs. First, I had to find the angle the robot must turn. I do this in the code below.<br><br>
+                                <code>
+                                    command[0] = (atan((slope_p2-slope_p1)/(1+slope_p1*slope_p2)))*180/3.14159;<br><br>
+                                </code>
+                                This code implements an equation to find the angle between two lines in radians, then converts that to degrees. <code>command[0]</code> is passed as the setpoint to the rotational PID controller. Before moving onto adding linear movement, I made sure all the rotations 
+                                worked well in sequence, this led me to an issue where 90 degrees turns cause a division by 0. I added simple conditionals to deal with this.<br><br>
+                                <code>
+                                    if(isinf(slope_p1) && isinf(slope_p2))<br>
+                                    &nbspcommand[0] = 90;<br><br>
+                                </code> 
+                                With this, the robot would execute the turns extremely well when in one spot.
+                                <br><br></h5>
+                                <h3>Part 1: Linear movement</h3>
+                                <h5>
+                                <br>
+                                With rotations in place, I began working on linear movements. First, I used the equation to find the distance between two points.<br><br>
+                                <code>
+                                    command[1] = sqrt(pow(next[0]-curr[0],2) + pow(next[1]-curr[1],2))*304.8;<br><br>
+                                </code>
+                                To this, I add a single front sensor reading.<br><br>
+                                <code>
+                                    command[1] += car.getFrontDist();<br><br>
+                                </code>
+                                This will make the robot go the distance it needs to when driving in reverse. If going forward, the fron sensor reading must instead be subtracted.<br><br>
+
+                                With is in place, I was able to send my robot through the maze.<br><br>
+                                <div style="text-align: center;">
+                                    <video width="500" height="375" controls>
+                                        <source src="../assets/lab13/maze.mp4" type="video/mp4">
+                                    </video>
+                                </div><br><br>
+
+                                Besides hitting the wall, the robot navigates extremely well. I also included a victory localization at the end.<br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab13/local.jpeg" alt="output">
+                                </div><br><br>
+                                It was a bit off, but still very close.
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +156,4 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
