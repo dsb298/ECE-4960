@@ -37,47 +37,98 @@
         <section class="page-section lab1-primary" id="lab1-contents">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <h4 class="text-white mt-0">
-                            About ECE 4960
+                    <div class="col-lg-8 text-left">
+                        <h4 class="text-black mt-0">
+                            <div style="text-align: center;">
+                                <h2>Lab Description</h2>
+                            </div>
                             <br>
-                            hello
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
+                            <h5>
+                                The purpose of this lab is to use a fully functional Bayes filter to localize the robot within the maze.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Setup</h2>
+                            </div>
+                            <h5>
+                                The only setup for this lab is to download files needed to implement the filter.
+                            </h5>
                             <br>
                             <br>
+                            <div style="text-align: center;">
+                                <h2>Lab Sections</h2>
+                            </div>
                             <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            test
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            bottom
+                            <h3>Part 1: </h3>
+                            <h5>
+                                For this lab, we are given four locations in the maze to place the robot. The robot is to be places in each location and must determine where it is at. The 4 locations can be seen by the red dots below.<br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab12/map.PNG" alt="output">
+                                </div>
+                                <br>
+
+                                The main portion of code in python that must be written is the obersvation loop step. This code is written under the function <code>perform_observation_loop(self, rot_vel=120)</code>. The code here is short, all that needs 
+                                to be done is to normalize the read sensor data, then transpose said data.<br><br>
+                                <code>
+                                    sensor_ranges = [x / 1000 for x in val_arr] <br>
+                                    sensor_ranges = np.array(sensor_ranges)[np.newaxis].T<br><br>
+                                </code>
+
+                                The arduino side of the code that had to be written is more complex. I did my previous mapping by continuously spinning. Here, I had to switch over to doing 20 degree turns. This was an issue for me 
+                                as my robot is very bad at moving at slow speeds. However, I was able to get my robot to do 20 degree turns relatively well through PID. It just has to do each turn very quickly to work.
+                                <br><br>VIDEO<br><br>
+
+                                To get the robot to spin, I used a for loop that iterates 18 times. for each iteration, the robot does one PID controlled 20 degree rotation. Only the P was used in PID.<br><br>
+                                <code>
+                                    while(total_deg <= 20){<br>
+                                    &nbsp    this->dt = (millis() - this->prev_t)/1000;<br>
+                                    &nbsp    this->prev_t = millis();<br>
+                                    &nbsp    if(this->myICM.dataReady()){<br>
+                                    &nbsp&nbsp      this->myICM.getAGMT();<br>
+                                    &nbsp&nbsp      this->yaw_g = myICM.gyrZ();<br>
+                                    &nbsp&nbsp      this->yaw_g = (this->yaw_g + this->myICM.gyrZ()*this->dt*.001)*(.3) + this->prev_yaw_g*.7;<br>
+                                    &nbsp&nbsp      this->prev_yaw_g = this->yaw_g;<br>
+                                    &nbsp    }<br>
+                                    &nbsp    float error = this->yaw_g - 20;<br>
+                                    &nbsp    control = 140-error*.6;<br>
+                                    &nbsp    total_deg+=(yaw_g*dt);<br>
+                                    &nbsp    left(control);<br>
+                                    }<br><br>
+                                </code>
+
+                                The most helpful part of the rotations was using the filtered gyro to control the PID. The <code>total_deg</code> variable accumulates to 20 degrees. The while loop is then broken and <code>total_deg</code> is reset back to zero.<br><br>
+
+                                <div style="text-align: center;">
+                                    <video width="500" height="375" controls>
+                                        <source src="../assets/lab12/vid.mp4" type="video/mp4">
+                                    </video>
+                                </div><br>
+
+                                My localization worked very well. Below are the locations it recorded being at, with a red dot to indicated the actual location.<br><br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab12/bel_-3-2.PNG" alt="output">
+                                </div>
+                                <br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab12/bottomright.jpeg" alt="output">
+                                </div>
+                                <br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab12/bel_53.PNG" alt="output">
+                                </div>
+                                <br>
+                                <div style="text-align: center;">
+                                    <img src="../assets/lab12/topleft.jpeg" alt="output">
+                                </div>
+                                <br><br>
+
+                                In a few instances, no red dot is shown. This is because the robot read that it was in the correct spot. location 5,3 is a little bit below where it should be. This location was the most difficult to get reasonably accurate, 
+                                and often seemed to think it was at 0,3. I believe this is due to the locations looking almost like mirror images of each other. I was eventually able to consistently recognize it was in that corner, but the accuracy was never good. 
+                                I'm not sure why that is, but it may have to do with that corner having the most obstacles near it.<br><br>
+                                The top left is also off a bit and was also often read as being in the top right instead. It's hard to say why exactly it's off, but it may be due to the drift of the robot as it rotates.
+
+                            </h5>
                         </h4>
                         <!-- <a class="btn btn-light btn-xl" href="#services">Get Started!</a> -->
                     </div>
@@ -135,3 +186,4 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
